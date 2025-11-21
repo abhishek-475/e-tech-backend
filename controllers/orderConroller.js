@@ -27,11 +27,20 @@ exports.createOrder = async (req, res, next) => {
   try {
     const { products, totalPrice, paymentInfo } = req.body;
 
+    // fetch user info from database
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
     const order = await Order.create({
-      user: req.user._id, // from token
+      user: req.user._id,      // from token
       products,
       totalPrice,
       paymentInfo,
+      mobile: user.mobile,     // use mobile from profile
+      address: user.address,   // use address from profile
       isPaid: true,
       paidAt: Date.now(),
     });

@@ -98,11 +98,11 @@ exports.getUserProfile = async (req, res) => {
 // UPDATE USER PROFILE
 exports.updateUser = async (req, res) => {
   try {
-    const { name } = req.body;
+    const { name, mobile, address } = req.body;
 
     const updatedUser = await User.findByIdAndUpdate(
       req.user.id,
-      { name },
+      { name, mobile, address },
       { new: true }
     ).select("-password");
 
@@ -116,6 +116,7 @@ exports.updateUser = async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 };
+
 
 // LOGOUT (frontend should delete token)
 exports.logoutUser = async (req, res) => {
