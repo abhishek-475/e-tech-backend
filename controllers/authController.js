@@ -130,3 +130,36 @@ exports.logoutUser = async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 };
+
+exports.getAllUsers = async (req, res) => {
+  try {
+    // Only admin can access this (protect middleware + admin check)
+    const users = await User.find().select("-password"); // exclude passwords
+
+    res.json({
+      success: true,
+      users,
+    });
+  } catch (error) {
+    console.error("Get All Users Error:", error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+exports.deleteUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user)
+      return res.status(404).json({ message: "User not found" });
+
+    await user.remove();
+
+    res.json({
+      success: true,
+      message: "User deleted successfully",
+    });
+  } catch (error) {
+    console.error("Delete User Error:", error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
